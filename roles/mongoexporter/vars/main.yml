@@ -1,0 +1,6 @@
+---
+  serviceName: "mongoexporter"
+  userId: "mongoexporter"
+  groupId: "mongoexporter"
+  exec_command: "/usr/local/bin/mongodb_exporter --mongodb.uri=mongodb://{{ hostvars[inventory_hostname].mongo_uri }}"
+  version: "1.0.0"

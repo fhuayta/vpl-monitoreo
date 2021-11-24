@@ -1,0 +1,74 @@
+global:
+  scrape_interval:     15s # Set the scrape interval to every 15 seconds. Default is every 1 minute.
+  evaluation_interval: 15s # Evaluate rules every 15 seconds. The default is every 1 minute.
+
+
+scrape_configs:
+  - job_name: 'prometheus'
+
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['localhost:9090']
+
+  {% for host in groups['nodeexporter'] %}
+- job_name: '{{ hostvars[host].name }}'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['{{ hostvars[host].ip }}:9100']
+
+  {% endfor %}
+
+  {% for host in groups['postgresexporter'] %}
+- job_name: '{{ hostvars[host].name }}'
+    static_configs:
+      - targets: ['{{ hostvars[host].ip }}:9187']
+
+  {% endfor %}
+
+  {% for host in groups['vaultserver'] %}
+- job_name: '{{ hostvars[host].name }}'
+    metrics_path: "/v1/sys/metrics"
+    params:
+      format: ['prometheus']
+    scheme: http
+    bearer_token: "{{ hostvars[host].vault_bearer_token }}"
+    static_configs:
+    - targets: ['{{ hostvars[host].ip }}:8200']
+
+  {% endfor %}
+
+  {% for host in groups['blackbox'] %}
+- job_name: 'prometheus-blackbox'
+    static_configs:
+    - targets: ['localhost:9090', 'localhost:9115']
+
+  {% endfor %}
+
+  {% for host in groups['blackbox'] %}
+- job_name: 'blackbox-sitio'
+    metrics_path: /probe
+    params:
+      module: [http_2xx]
+    static_configs:
+      - targets:
+        - https://registro.ciudadaniadigital.agetic.gob.bo/api/
+
+      - targets: ['https://www.agetic.gob.bo']
+        labels:
+          name: 'AGETIC.GOB.BO'
+          section: 'api_gateway'
+
+      - targets: ['https://taiga.agetic.gob.bo']
+        labels:
+          name: 'TAIGA'
+          section: 'herramientas'
+
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: {{ hostvars[host].ip }}:9115  # The blackbox exporter's real hostname:port.
+
+  {% endfor %}

@@ -1,0 +1,6 @@
+---
+  serviceName: "postgresexporter"
+  userId: "postgresexporter"
+  groupId: "postgresexporter"
+  exec_command: "/usr/local/bin/postgres_exporter"
+  version: "0.10.0"

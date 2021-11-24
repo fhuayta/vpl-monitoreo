@@ -1,0 +1,57 @@
+---
+  - hosts: promtail
+    become: yes
+    become_user: root
+    become_method: sudo
+    roles:
+      - promtail
+
+  - hosts: nodeexporter
+    become: yes
+    become_user: root
+    become_method: sudo
+    roles:
+      - nodeexporter
+
+  - hosts: postgresexporter
+    become: yes
+    become_user: root
+    become_method: sudo
+    roles:
+      - postgresexporter
+
+  - hosts: mongoexporter
+    become: yes
+    become_user: root
+    become_method: sudo
+    roles:
+      - mongoexporter
+
+  - hosts: blackbox
+    become: yes
+    become_user: root
+    become_method: sudo
+    roles:
+      - blackbox
+
+  - hosts: loki
+    become: yes
+    become_user: root
+    become_method: sudo
+    roles:
+      - loki
+       #- grafana
+
+  - hosts: prometheus
+    become: yes
+    become_user: root
+    become_method: sudo
+    roles:
+      - prometheus
+
+  - hosts: grafana
+    become: yes
+    become_user: root
+    become_method: sudo
+    roles:
+      - grafana

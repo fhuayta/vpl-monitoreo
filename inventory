@@ -1,0 +1,67 @@
+#HOSTs
+grafana ansible_host=143.198.153.116 ansible_user=root ip=143.198.153.116 name=grafana
+#
+prometheus ansible_host=143.198.153.116 ansible_user=root ip=143.198.153.116 name=prometheus
+#
+loki ansible_host=143.198.153.116 ansible_user=root ip=143.198.153.116 name=loki
+#
+promtail-1 ansible_host=143.198.153.116 ansible_user=root ip=143.198.153.116 name=promtail-aplicacion path_log=/var/log/*log
+promtail-2 ansible_host=143.198.153.116 ansible_user=root ip=143.198.153.116 name=promtail-reporteador path_log=/var/log/*log
+promtail-3 ansible_host=143.198.153.116 ansible_user=root ip=143.198.153.116 name=promtail-nfs path_log=/var/log/*log
+promtail-4 ansible_host=143.198.153.116 ansible_user=root ip=143.198.153.116 name=promtail-bd path_log=/var/log/*log
+#
+nodeexporter-1 ansible_host=143.198.153.116 ansible_user=root ip=143.198.153.116 name=metric-sandbox-app
+nodeexporter-2 ansible_host=143.198.153.116 ansible_user=root ip=143.198.153.116 name=metric-sandbox-postgres
+nodeexporter-3 ansible_host=143.198.153.116 ansible_user=root ip=143.198.153.116 name=metric-sandbox-reporteador
+nodeexporter-4 ansible_host=143.198.153.116 ansible_user=root ip=143.198.153.116 name=metric-transversal-nfs
+nodeexporter-5 ansible_host=143.198.153.116 ansible_user=root ip=143.198.153.116 name=metric-transversal-vault
+nodeexporter-6 ansible_host=143.198.153.116 ansible_user=root ip=143.198.153.116 name=metric-transversal-monitoreo
+#
+postgresexporter-1 ansible_host=143.198.153.116 ansible_user=root ip=143.198.153.116 name=postgres-app pg_user=monitoreo pg_password=pg4827hsyatrd5242 pg_puerto=5432 pg_bd=rootdb
+#
+#
+vault-1 ansible_host=143.198.153.116 ansible_user=root ip=143.198.153.116 name=vault-server1 vault_bearer_token=s.9ZdxiiNtkxpUAyX6xHi12gSC vault_puerto=8200
+#
+blackboxserver ansible_host=143.198.153.116 ansible_user=root ip=143.198.153.116 name=blackbox
+#
+
+# Servidor Grafana (Generalmente un server)
+[grafana]
+grafana
+
+# Servidor Prometheus (Generalmente un server)
+[prometheus]
+prometheus
+
+
+# Servidor Loki (Generalmente un server)
+[loki]
+loki
+
+# Agentes promptail, pueden ser 1 o N. Estaran configurados para envio de datos al -loki-
+[promtail]
+promtail-1
+
+# Agentes nodeexporter, pueden ser 1 o N. Estaran configurados para envio de datos al -prometheus-
+[nodeexporter]
+nodeexporter-1
+
+[postgresexporter]
+# postgresexporter-1
+
+[mongoexporter]
+#mongoexporter-1
+#mongoexporter-2
+
+[vaultserver]
+# vault-1
+
+[blackbox]
+blackboxserver
+
+[all:vars]
+# Ingresar datos de conexion SSH
+ansible_connection=ssh
+ansible_user=root
+ansible_ssh_pass=Axceso123$1Ad
+# ansible_ssh_common_args='-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ProxyCommand="ssh -W %h:%p -q bastionDirnoplu"'

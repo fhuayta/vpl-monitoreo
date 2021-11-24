@@ -1,0 +1,9 @@
+- name: Reinicio del servicio de blackbox
+  service:
+    name: blackbox
+    state: restarted
+  listen: event_restart_blackbox
+
+- name: Reload systemd
+  command: systemctl daemon-reload
+  listen: systemd_reload

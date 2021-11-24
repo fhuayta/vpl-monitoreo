@@ -1,0 +1,41 @@
+- name: Crear un grupo de mongoexporter
+  group: name="{{ groupId }}"
+  become: true
+
+- name: Creando un usuario mongoexporter
+  user:
+    name: "{{ userId }}"
+    group: "{{ groupId }}"
+    system: yes
+    shell: "/sbin/nologin"
+    comment: "{{ userId }} nologin User"
+    createhome: "no"
+    state: present
+
+- name: Download MongoExporter using get_url
+  become: yes
+  get_url:
+    url: https://github.com/dcu/mongodb_exporter/releases/download/v{{ version }}/mongodb_exporter-linux-amd64
+    dest: /usr/local/bin/mongodb_exporter
+    mode: 0755
+    #checksum: sha512:5bdea5414713c9ba39e226f062701fa14998b1a798c9750f956a0f59b5edabb8d83af9ec9f81cf9f47fa92c21b560c9b2be1b543d0bd8f1b49579b69101d3a8f
+    #group: mongoexporter
+    #owner: mongoexporter
+
+- name: Copiando systemd init file
+  template:
+    src: init.service.j2
+    dest: /etc/systemd/system/mongoexporter.service
+  notify: systemd_reload
+
+- name: Iniciando el servicio de mongoexporter
+  service:
+    name: mongoexporter
+    state: started
+    enabled: yes
+
+- name: Verificando si mongoexporter es accesible
+  uri:
+    url: http://localhost:9001
+    method: GET
+    status_code: 200

@@ -1,0 +1,9 @@
+- name: Reinicio del servicio de nodeexporter
+  service:
+    name: nodeexporter
+    state: restarted
+  listen: event_restart_nodeexporter
+
+- name: Reload systemd
+  command: systemctl daemon-reload
+  listen: systemd_reload

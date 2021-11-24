@@ -1,0 +1,30 @@
+apiVersion: 1
+
+providers:
+ - name: LOGS
+   orgId: 1
+   folder: Logs
+   type: file
+   options:
+     path: /opt/grafana/dashboard/LOGS/
+
+ - name: METRICAS
+   orgId: 1
+   folder: Metricas
+   type: file
+   options:
+     path: /opt/grafana/dashboard/METRICAS/
+
+ - name: BD
+   orgId: 1
+   folder: BD
+   type: file
+   options:
+     path: /opt/grafana/dashboard/BD/
+
+ - name: VAULT
+   orgId: 1
+   folder: Vault
+   type: file
+   options:
+     path: /opt/grafana/dashboard/VAULT/

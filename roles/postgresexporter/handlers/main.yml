@@ -1,0 +1,9 @@
+- name: Reinicio del servicio de postgresexporter
+  service:
+    name: postgresexporter
+    state: restarted
+  listen: event_restart_postgresexporter
+
+- name: Reload systemd
+  command: systemctl daemon-reload
+  listen: systemd_reload

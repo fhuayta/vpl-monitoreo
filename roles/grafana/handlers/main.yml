@@ -1,0 +1,9 @@
+- name: Reinicio del servicio de grafana
+  service:
+    name: grafana
+    state: restarted
+  listen: event_restart_grafana
+
+- name: Reload systemd
+  command: systemctl daemon-reload
+  listen: systemd_reload

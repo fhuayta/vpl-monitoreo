@@ -1,0 +1,6 @@
+---
+  serviceName: "nodeexporter"
+  userId: "nodeexporter"
+  groupId: "nodeexporter"
+  exec_command: "/usr/local/bin/node_exporter"
+  version: "1.2.0"

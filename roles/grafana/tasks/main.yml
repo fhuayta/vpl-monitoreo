@@ -1,0 +1,87 @@
+- name: Download DEB grafana using get_url
+  become: yes
+  get_url:
+    url: "{{ package_url }}"
+    dest: "/tmp/{{package_name}}.deb"
+    mode: 0755
+
+- name: Install Grafana
+  apt:
+    deb: "/tmp/{{package_name}}.deb"
+
+- name: Iniciando el servicio de grafana
+  service:
+    name: grafana-server
+    state: started
+    enabled: yes
+
+- name: Delete grafana tmp install file
+  file:
+    path: '/tmp/{{package_name}}.deb'
+    state: absent
+
+- name: Verificando que GRAFANA este levantado en el puerto correspondiente
+  wait_for:
+    host: localhost
+    port: "{{ item }}"
+    state: started
+    delay: 0
+    timeout: 3
+  ignore_errors: yes
+  with_items:
+    - 3000
+
+- name: Create LOKI datasource
+  grafana_datasource:
+    name: "{{ item.name }}"
+    grafana_url: "{{ grafana_url }}"
+    grafana_user: "{{ grafana_user }}"
+    grafana_password: "{{ grafana_password }}"
+    ds_type: "{{ item.ds_type }}"
+    ds_url: "{{ item.ds_url }}"
+    url: "{{ item.url }}"
+    database: "{{ item.name }}"
+    user: "{{ item.user }}"
+    password: "{{ item.password }}"
+    state: present
+  with_items: "{{ data_source }}"
+
+- name: Create PROMETHEUS datasource
+  grafana_datasource:
+    name: "{{ item.name }}"
+    grafana_url: "{{ grafana_url }}"
+    grafana_user: "{{ grafana_user }}"
+    grafana_password: "{{ grafana_password }}"
+    ds_type: "{{ item.ds_type }}"
+    ds_url: "{{ item.ds_url }}"
+    url: "{{ item.url }}"
+    database: "{{ item.name }}"
+    user: "{{ item.user }}"
+    password: "{{ item.password }}"
+    state: present
+  with_items: "{{ data_source_prometheus }}"
+
+- name: Creando directorio dashboards
+  file:
+    path: "/opt/grafana/dashboard/"
+    state: directory
+    mode: 0755
+    recurse: yes
+
+- name: Copiando archivo de configuracion
+  template:
+    src: generales.yaml.j2
+    dest: /etc/grafana/provisioning/dashboards/generales.yaml
+  notify: systemd_reload
+
+- name: Comenzando aprovisionamiento dashboards.tar.gz a /opt/grafana/dashboard/
+  ansible.builtin.unarchive:
+    src: ../templates/dashboards.tar.gz
+    dest: /opt/grafana/dashboard/
+    remote_src: no
+
+- name: Reiniciando servicio de grafana
+  service:
+    name: grafana-server
+    state: restarted
+    enabled: yes

@@ -1,0 +1,6 @@
+---
+  serviceName: "promtail"
+  userId: "promtail"
+  groupId: "promtail"
+  exec_command: /usr/local/bin/promtail --config.file=/etc/promtail/promtail-local-config.yaml
+  version: "2.2.1"

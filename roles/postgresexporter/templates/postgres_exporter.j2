@@ -1,0 +1,2 @@
+# Inside env-file
+DATA_SOURCE_NAME="postgresql://{{ hostvars[inventory_hostname].pg_user }}:{{ hostvars[inventory_hostname].pg_password }}@localhost:{{ hostvars[inventory_hostname].pg_puerto }}/{{ hostvars[inventory_hostname].pg_bd }}?sslmode=disable"

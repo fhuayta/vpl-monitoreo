@@ -1,0 +1,9 @@
+- name: Reinicio del servicio de mongoexporter
+  service:
+    name: mongoexporter
+    state: restarted
+  listen: event_restart_mongoexporter
+
+- name: Reload systemd
+  command: systemctl daemon-reload
+  listen: systemd_reload

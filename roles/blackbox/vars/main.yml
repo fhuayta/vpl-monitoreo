@@ -1,0 +1,6 @@
+---
+  serviceName: "blackbox"
+  userId: "blackbox"
+  groupId: "blackbox"
+  exec_command: /usr/local/bin/blackbox_exporter --config.file=/etc/blackbox/blackbox.yml --web.listen-address=":9115"
+  version: "0.19.0"

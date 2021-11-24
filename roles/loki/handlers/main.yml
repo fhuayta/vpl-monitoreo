@@ -1,0 +1,9 @@
+- name: Reinicio del servicio de loki
+  service:
+    name: loki
+    state: restarted
+  listen: event_restart_loki
+
+- name: Reload systemd
+  command: systemctl daemon-reload
+  listen: systemd_reload

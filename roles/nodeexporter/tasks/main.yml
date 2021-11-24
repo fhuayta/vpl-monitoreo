@@ -1,0 +1,51 @@
+- name: Crear un grupo de nodeexporter
+  group: name="{{ groupId }}"
+  become: true
+
+- name: Creando un usuario nodeexporter
+  user:
+    name: "{{ userId }}"
+    group: "{{ groupId }}"
+    system: yes
+    shell: "/sbin/nologin"
+    comment: "{{ userId }} nologin User"
+    createhome: "no"
+    state: present
+
+- name: Instalando nodeexporter
+  unarchive:
+    src: "https://github.com/prometheus/node_exporter/releases/download/v{{ version }}/node_exporter-{{ version }}.linux-amd64.tar.gz"
+    dest: "/tmp/"
+    remote_src: yes
+
+- name: Copiando el archivo de nodeexporter a bin
+  copy:
+    src: "/tmp/node_exporter-{{ version }}.linux-amd64/node_exporter"
+    dest: "/usr/local/bin/node_exporter"
+    owner: "{{ userId }}"
+    group: "{{ groupId }}"
+    remote_src: yes
+    mode: 0755
+
+- name: Delete nodeexporter tmp folder
+  file:
+    path: '/tmp/node_exporter-{{ version }}.linux-amd64'
+    state: absent
+
+- name: Copiando systemd init file
+  template:
+    src: init.service.j2
+    dest: /etc/systemd/system/nodeexporter.service
+  notify: systemd_reload
+
+- name: Iniciando el servicio de nodeexporter
+  service:
+    name: nodeexporter
+    state: started
+    enabled: yes
+
+- name: Verificando si nodeexporter es accesible
+  uri:
+    url: http://localhost:9100
+    method: GET
+    status_code: 200
